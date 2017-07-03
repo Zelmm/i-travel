@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">I-Travel</string>
-    <string name="splash_slogan">Собирай вещи!</string>
+    <string name="splash_slogan">Собирай чемоданы!</string>
+    <string name="number_button_min">1</string>
+    <string name="number_button_max">20</string>
+    <string name="create_new_trip_label">Создание новой поездки</string>
+    <string name="title_delete_person">Удаление персоны</string>
+    <string name="dialog_aushure">Вы уверены?</string>
+    <string name="button_ok">Ok</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="person_ok">Правильно сделали!</string>
+    <string name="person_delete">Так ему и надо!</string>
 </resources>
