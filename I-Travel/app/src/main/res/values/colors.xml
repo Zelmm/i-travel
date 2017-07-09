@@ -7,4 +7,6 @@
     <color name="colorBackground">#f3f3f3</color>
     <color name="colorTextLight">#adb2bf</color>
     <color name="colorTextDark">#3e4148</color>
+    <color name="colorBackgroundCard">#e1e1e1</color>
+    <color name="colorWhite">#FFFFFF</color>
 </resources>

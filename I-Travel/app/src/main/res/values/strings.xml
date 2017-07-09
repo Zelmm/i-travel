@@ -10,4 +10,26 @@
     <string name="button_cancel">Отмена</string>
     <string name="person_ok">Правильно сделали!</string>
     <string name="person_delete">Так ему и надо!</string>
+    <string name="btn_create_trip">Создать поездку</string>
+    <string name="enter_country">Страна назначения</string>
+    <string name="enter_city">Населенный пункт</string>
+    <string name="title_destination_text">Место назначения</string>
+    <string name="txt_persons">Участники</string>
+    <string name="txt_type">Тип поездки</string>
+    <string name="txt_transport">Транспорт</string>
+    <string name="date_to_hint">Дата отъезда</string>
+    <string name="date_from_hint">Дата приезда</string>
+    <string name="choose_date">Выберите дату</string>
+    <string-array name="transport_list">
+        <item>самолёт</item>
+        <item>поезд</item>
+        <item>автобус</item>
+        <item>корабль</item>
+        <item>автомобиль</item>
+        <item>пешком</item>
+    </string-array>
+    <string-array name="type_list">
+        <item>отпуск</item>
+        <item>деловая</item>
+    </string-array>
 </resources>
