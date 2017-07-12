@@ -144,9 +144,13 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
                 {
                     e.printStackTrace();
                 }
-                //ограничение. нельзя выбрать дату приезда ранее даты отъезда
+                //ограничение. нельзя выбрать дату отъзда ранее даты приезда
                 chooseDate.getDatePicker().setMinDate(convertedDate.getTime());
             }
+        }
+        if (view.getId() == R.id.date_from){
+            //ограничение. нельзя выбрать дату отъезда ранее сегодняшней даты
+            chooseDate.getDatePicker().setMinDate(calendar.getTimeInMillis());
         }
     }
 
@@ -161,8 +165,10 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
             e.printStackTrace();
         }
         if (hasFocus) {
-            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+//                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
             switch (view.getId()){
                 case R.id.date_from:
                     chooseDate.show();
