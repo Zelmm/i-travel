@@ -1,5 +1,7 @@
 package ru.goodibunakov.itravel;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -8,19 +10,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 
-public class CreateNewTripActivity extends AppCompatActivity {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class CreateNewTripActivity extends AppCompatActivity implements View.OnFocusChangeListener{
 
     ElegantNumberButton numberButton;
+    private DatePickerDialog chooseDate;
     AlertDialog.Builder ad;
+    private EditText dateFrom, dateTo;
     String[] cities = {"Москва, писка", "Самара", "Вологда", "Волгоград", "Саратов", "Воронеж"};
 
     @Override
@@ -32,14 +43,12 @@ public class CreateNewTripActivity extends AppCompatActivity {
         Button createTrip = (Button) findViewById(R.id.btn_create_trip);
         createTrip.setClickable(false);
         AutoCompleteTextView autoCompleteTextViewCountry = (AutoCompleteTextView) findViewById(R.id.country);
-        EditText dateFrom = (EditText) findViewById(R.id.date_from);
-        dateFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                DialogFragment dateDialog = new DatePicker();
-                dateDialog.show(getSupportFragmentManager(), "datePicker");
-            }
-        });
+        dateFrom = (EditText) findViewById(R.id.date_from);
+        dateFrom.setOnFocusChangeListener(this);
+        dateTo = (EditText) findViewById(R.id.date_to);
+        dateTo.setOnFocusChangeListener(this);
+
+
 
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, cities);
@@ -97,5 +106,76 @@ public class CreateNewTripActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.create_new_trip_activity, menu);
         return true;
+    }
+
+    //инициализация диалога выбора даты
+    private void initDateDialog(final View view) throws ParseException {
+        String dateFromString;
+        Calendar calendar = Calendar.getInstance();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        chooseDate = new DatePickerDialog(CreateNewTripActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newCalendar = Calendar.getInstance();
+                newCalendar.set(year, monthOfYear, dayOfMonth);
+                switch (view.getId()) {
+                    case R.id.date_from:
+                        dateFrom.setText(dateFormat.format(newCalendar.getTime()));
+                        break;
+                    case R.id.date_to:
+                        dateTo.setText(dateFormat.format(newCalendar.getTime()));
+                        break;
+                }
+
+            }
+        }, calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        if (view.getId() == R.id.date_to){
+            if (!dateFrom.getText().toString().isEmpty()) {
+                dateFromString = dateFrom.getText().toString();
+                SimpleDateFormat dateFormatTemp = new SimpleDateFormat("dd.MM.yyyy");
+                Date convertedDate = new Date();
+                try
+                {
+                    convertedDate = dateFormatTemp.parse(dateFromString);
+                }
+                catch (ParseException e)
+                {
+                    e.printStackTrace();
+                }
+                //ограничение. нельзя выбрать дату приезда ранее даты отъезда
+                chooseDate.getDatePicker().setMinDate(convertedDate.getTime());
+            }
+        }
+    }
+
+
+    //вызывается когда сменился фокус на EditText
+    //Потом проверка, если в фокусе, то инициализировать диалог выбора даты и показать
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        try {
+            initDateDialog(view);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (hasFocus) {
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
+            switch (view.getId()){
+                case R.id.date_from:
+                    chooseDate.show();
+                    break;
+                case R.id.date_to:
+                    if (dateFrom.getText().toString().isEmpty()) {
+                        Toast.makeText(CreateNewTripActivity.this, getResources().getString(R.string.warning_enter_date_from), Toast.LENGTH_SHORT).show();
+                    } else chooseDate.show();
+                    break;
+
+            }
+
+        }
+
     }
 }

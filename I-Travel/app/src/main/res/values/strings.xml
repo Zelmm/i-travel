@@ -20,6 +20,7 @@
     <string name="date_to_hint">Дата отъезда</string>
     <string name="date_from_hint">Дата приезда</string>
     <string name="choose_date">Выберите дату</string>
+    <string name="warning_enter_date_from">Сначала введите дату приезда</string>
     <string-array name="transport_list">
         <item>самолёт</item>
         <item>поезд</item>
