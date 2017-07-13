@@ -21,6 +21,10 @@
     <string name="date_from_hint">Дата приезда</string>
     <string name="choose_date">Выберите дату</string>
     <string name="warning_enter_date_from">Сначала введите дату приезда</string>
+    <string name="txt_parameters">Параметры поездки</string>
+    <string name="title_dates_text">Даты поездки</string>
+    <string name="txt_type_vacation">Отпуск</string>
+    <string name="txt_type_business">Деловая</string>
     <string-array name="transport_list">
         <item>самолёт</item>
         <item>поезд</item>
@@ -33,4 +37,5 @@
         <item>отпуск</item>
         <item>деловая</item>
     </string-array>
+    <string name="title_activity_person_edit">PersonEditActivity</string>
 </resources>

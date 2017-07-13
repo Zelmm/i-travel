@@ -26,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import co.ceryle.radiorealbutton.RadioRealButton;
+import co.ceryle.radiorealbutton.RadioRealButtonGroup;
+
 public class CreateNewTripActivity extends AppCompatActivity implements View.OnFocusChangeListener{
 
     ElegantNumberButton numberButton;
@@ -48,6 +51,21 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         dateTo = (EditText) findViewById(R.id.date_to);
         dateTo.setOnFocusChangeListener(this);
 
+        final RadioRealButton btnBus = (RadioRealButton) findViewById(R.id.transport_bus);
+        final RadioRealButton btnCar = (RadioRealButton) findViewById(R.id.transport_car);
+        final RadioRealButton btnPlain = (RadioRealButton) findViewById(R.id.transport_plain);
+        final RadioRealButton btnShip = (RadioRealButton) findViewById(R.id.transport_ship);
+        final RadioRealButton btnTrain = (RadioRealButton) findViewById(R.id.transport_train);
+        final RadioRealButton btnNogami = (RadioRealButton) findViewById(R.id.transport_nogami);
+        RadioRealButtonGroup group = (RadioRealButtonGroup) findViewById(R.id.transport_group);
+
+        // onClickButton listener detects any click performed on buttons by touch
+        group.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
+            @Override
+            public void onClickedButton(RadioRealButton button, int position) {
+                Toast.makeText(CreateNewTripActivity.this, "Clicked! Position: " + (position+1), Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         ArrayAdapter<String> adapter =
@@ -70,7 +88,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
                 // Добавляем новый ImageView
                 if (oldValue < newValue) {
                     ImageView imageView = new ImageView(CreateNewTripActivity.this);
-                    imageView.setImageResource(R.drawable.i_travel_logo_1);
+                    imageView.setImageResource(R.drawable.i_travel_logo_bird);
                     ViewGroup.LayoutParams imageViewLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     imageViewLayoutParams.height = 300;
                     imageViewLayoutParams.width = 300;
@@ -149,7 +167,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
             }
         }
         if (view.getId() == R.id.date_from){
-            //ограничение. нельзя выбрать дату отъезда ранее сегодняшней даты
+            //ограничение. нельзя выбрать дату приезда ранее сегодняшней даты
             chooseDate.getDatePicker().setMinDate(calendar.getTimeInMillis());
         }
     }
@@ -166,7 +184,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         }
         if (hasFocus) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
 //            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
 //                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
             switch (view.getId()){

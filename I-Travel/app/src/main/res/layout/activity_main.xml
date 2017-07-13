@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ru.goodibunakov.itravel.MainActivity"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    android:padding="@dimen/layout_padding">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -18,9 +19,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         tools:layout_editor_absoluteX="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintHorizontal_bias="0.96"
-        app:layout_constraintVertical_bias="0.96"
-        android:elevation="6dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintVertical_bias="1.0"
+        android:elevation="4dp"
         app:pressedTranslationZ="12dp"
         app:backgroundTint="@color/colorAccent"
         app:rippleColor="@color/colorAccentFab"/>
