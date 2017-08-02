@@ -1,11 +1,14 @@
 package ru.goodibunakov.itravel;
 
 import android.content.Intent;
+import android.database.SQLException;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.viksaa.sssplash.lib.activity.AwesomeSplash;
 import com.viksaa.sssplash.lib.cnst.Flags;
 import com.viksaa.sssplash.lib.model.ConfigSplash;
+
+import java.io.IOException;
 
 /**
  * Created by GooDi on 20.06.2017.
@@ -19,6 +22,8 @@ public class SplashScreen extends AwesomeSplash {
 
     @Override
     public void initSplash(ConfigSplash configSplash) {
+
+        startService(new Intent(this, MyDestinationService.class));
 
 			/* you don't have to override every property */
 
@@ -35,15 +40,13 @@ public class SplashScreen extends AwesomeSplash {
         configSplash.setAnimLogoSplashDuration(1500); //int ms
         configSplash.setAnimLogoSplashTechnique(Techniques.FadeIn); //choose one form Techniques (ref: https://github.com/daimajia/AndroidViewAnimations)
 
-
         //Customize Title
         configSplash.setTitleSplash(getString(R.string.splash_slogan));
         configSplash.setTitleTextColor(R.color.colorAccent);
         configSplash.setTitleTextSize(30f); //float value
         configSplash.setAnimTitleDuration(500);
         configSplash.setAnimTitleTechnique(Techniques.BounceInUp);
-        configSplash.setTitleFont("fonts/KelsonSansLightRU.ttf"); //provide string to your font located in assets/fonts/
-
+        configSplash.setTitleFont("fonts/Roboto-Light.ttf"); //provide string to your font located in assets/fonts/
     }
 
     @Override
@@ -52,13 +55,11 @@ public class SplashScreen extends AwesomeSplash {
         //transit to another activity here
         //or do whatever you want
 
-
         try {
             Thread.sleep(1000); //Приостанавливает поток на 1 секунду
         } catch (Exception e) {
 
         }
-
 
         Intent intent = new Intent(SplashScreen.this, MainActivity.class);
         startActivity(intent);

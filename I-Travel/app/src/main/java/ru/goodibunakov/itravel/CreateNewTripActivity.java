@@ -3,39 +3,42 @@ package ru.goodibunakov.itravel;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
 
-public class CreateNewTripActivity extends AppCompatActivity implements View.OnFocusChangeListener{
+public class CreateNewTripActivity extends AppCompatActivity implements View.OnFocusChangeListener {
 
     ElegantNumberButton numberButton;
     private DatePickerDialog chooseDate;
     AlertDialog.Builder ad;
     private EditText dateFrom, dateTo;
-    String[] cities = {"Москва, писка", "Самара", "Вологда", "Волгоград", "Саратов", "Воронеж"};
+    DataBaseDestinationHelper dataBaseDestinationHelper;
+    AutoCompleteTextView autoCompleteTextViewCountry;
+    AutoCompleteTextView autoCompleteTextViewCity;
+    String chosenCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +48,28 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         numberButton = (ElegantNumberButton) findViewById(R.id.elegant_number_button);
         Button createTrip = (Button) findViewById(R.id.btn_create_trip);
         createTrip.setClickable(false);
-        AutoCompleteTextView autoCompleteTextViewCountry = (AutoCompleteTextView) findViewById(R.id.country);
+        autoCompleteTextViewCountry = (AutoCompleteTextView) findViewById(R.id.country);
+        autoCompleteTextViewCity = (AutoCompleteTextView) findViewById(R.id.city);
         dateFrom = (EditText) findViewById(R.id.date_from);
         dateFrom.setOnFocusChangeListener(this);
         dateTo = (EditText) findViewById(R.id.date_to);
         dateTo.setOnFocusChangeListener(this);
+
+
+        dataBaseDestinationHelper = new DataBaseDestinationHelper(this);
+        ArrayList<String> allCountries = dataBaseDestinationHelper.getAllCountries();
+        ArrayAdapter<String> adapterAllCountries = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, allCountries);
+        autoCompleteTextViewCountry.setOnFocusChangeListener(this);
+        autoCompleteTextViewCountry.setAdapter(adapterAllCountries);
+
+
+        chosenCountry = autoCompleteTextViewCountry.getText().toString();
+        Log.i("MyLog", chosenCountry);
+        ArrayList<String> neededCities = dataBaseDestinationHelper.getNeededCities(chosenCountry);
+        ArrayAdapter<String> adapterNeededCities = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, neededCities);
+        autoCompleteTextViewCity.setOnFocusChangeListener(this);
+        autoCompleteTextViewCity.setAdapter(adapterNeededCities);
+
 
         final RadioRealButton btnBus = (RadioRealButton) findViewById(R.id.transport_bus);
         final RadioRealButton btnCar = (RadioRealButton) findViewById(R.id.transport_car);
@@ -60,39 +80,40 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         RadioRealButtonGroup group = (RadioRealButtonGroup) findViewById(R.id.transport_group);
 
         // onClickButton listener detects any click performed on buttons by touch
-        group.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
+        group.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener()
+
+        {
             @Override
             public void onClickedButton(RadioRealButton button, int position) {
-                Toast.makeText(CreateNewTripActivity.this, "Clicked! Position: " + (position+1), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateNewTripActivity.this, "Clicked! Position: " + (position + 1), Toast.LENGTH_SHORT).show();
             }
         });
 
-
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, cities);
-        //autoCompleteTextViewCountry.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        autoCompleteTextViewCountry.setAdapter(adapter);
-
         //обработка кнопки "Создать поездку"
-        createTrip.setOnClickListener(new View.OnClickListener() {
+        createTrip.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View view) {
 
             }
         });
 
+        numberButton.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener()
 
-        numberButton.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
+        {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
                 // Добавляем новый ImageView
                 if (oldValue < newValue) {
-                    ImageView imageView = new ImageView(CreateNewTripActivity.this);
-                    imageView.setImageResource(R.drawable.i_travel_logo_bird);
-                    ViewGroup.LayoutParams imageViewLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    imageViewLayoutParams.height = 300;
-                    imageViewLayoutParams.width = 300;
-                    imageView.setLayoutParams(imageViewLayoutParams);
+                    Intent newPerson = new Intent(CreateNewTripActivity.this, PersonEditActivity.class);
+                    startActivityForResult(newPerson, 0);
+//                    View imageView = new ImageView(CreateNewTripActivity.this);
+//                    View.setImageResource(R.drawable.i_travel_logo_bird);
+//                    ViewGroup.LayoutParams imageViewLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    imageViewLayoutParams.height = 300;
+//                    imageViewLayoutParams.width = 300;
+//                    imageView.setLayoutParams(imageViewLayoutParams);
                     //flowLayout.addView(imageView);
                 } else {
                     //Удаляем
@@ -149,24 +170,21 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         }, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
-        if (view.getId() == R.id.date_to){
+        if (view.getId() == R.id.date_to) {
             if (!dateFrom.getText().toString().isEmpty()) {
                 dateFromString = dateFrom.getText().toString();
                 SimpleDateFormat dateFormatTemp = new SimpleDateFormat("dd.MM.yyyy");
                 Date convertedDate = new Date();
-                try
-                {
+                try {
                     convertedDate = dateFormatTemp.parse(dateFromString);
-                }
-                catch (ParseException e)
-                {
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 //ограничение. нельзя выбрать дату отъзда ранее даты приезда
                 chooseDate.getDatePicker().setMinDate(convertedDate.getTime());
             }
         }
-        if (view.getId() == R.id.date_from){
+        if (view.getId() == R.id.date_from) {
             //ограничение. нельзя выбрать дату приезда ранее сегодняшней даты
             chooseDate.getDatePicker().setMinDate(calendar.getTimeInMillis());
         }
@@ -177,29 +195,51 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
     //Потом проверка, если в фокусе, то инициализировать диалог выбора даты и показать
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        try {
-            initDateDialog(view);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        switch (view.getId()) {
+            case R.id.country:
+                if (hasFocus) {
+                    if (autoCompleteTextViewCountry.length() > 0) {
+                        autoCompleteTextViewCountry.getText().clear();
+                    }
+                }
+                break;
+            case R.id.city:
+                if (hasFocus) {
+                    if (autoCompleteTextViewCity.length() > 0) {
+                        autoCompleteTextViewCity.getText().clear();
+                    }
+                }
+                break;
+            case R.id.date_from:
+            case R.id.date_to:
+                try {
+                    initDateDialog(view);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                    switch (view.getId()) {
+                        case R.id.date_from:
+                            chooseDate.show();
+                            break;
+                        case R.id.date_to:
+                            if (dateFrom.getText().toString().isEmpty()) {
+                                Toast.makeText(CreateNewTripActivity.this, getResources().getString(R.string.warning_enter_date_from), Toast.LENGTH_SHORT).show();
+                            } else chooseDate.show();
+                            break;
+
+                    }
+                }
+                break;
         }
-        if (hasFocus) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
-//            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-//                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
-            switch (view.getId()){
-                case R.id.date_from:
-                    chooseDate.show();
-                    break;
-                case R.id.date_to:
-                    if (dateFrom.getText().toString().isEmpty()) {
-                        Toast.makeText(CreateNewTripActivity.this, getResources().getString(R.string.warning_enter_date_from), Toast.LENGTH_SHORT).show();
-                    } else chooseDate.show();
-                    break;
 
-            }
+    }
 
-        }
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dataBaseDestinationHelper.close();
     }
 }

@@ -7,9 +7,10 @@
     <color name="colorBackground">#fcfcfc</color>
     <color name="colorTextLight">#757575</color>
     <color name="colorTextDark">#212121</color>
+    <color name="colorDivider">#BDBDBD</color>
     <color name="colorBackgroundCard">#e1e1e1</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorBackgroundLayout">#cacaca</color>
+    <color name="colorBackgroundLayout">#CACACA</color>
 </resources>
 
 <!--<resources>-->

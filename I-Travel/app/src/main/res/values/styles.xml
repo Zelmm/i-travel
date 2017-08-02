@@ -13,6 +13,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:textSize">@dimen/text_size_title</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:textColor">@color/colorTextDark</item>
     </style>
 
     <style name="text_title_min">

@@ -38,4 +38,5 @@
         <item>деловая</item>
     </string-array>
     <string name="title_activity_person_edit">PersonEditActivity</string>
+    <string name="txt_btn_person_edit_ok">Готово</string>
 </resources>
