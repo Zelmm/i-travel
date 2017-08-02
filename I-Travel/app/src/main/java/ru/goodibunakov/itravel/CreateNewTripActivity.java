@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -59,17 +59,19 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         dataBaseDestinationHelper = new DataBaseDestinationHelper(this);
         ArrayList<String> allCountries = dataBaseDestinationHelper.getAllCountries();
         ArrayAdapter<String> adapterAllCountries = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, allCountries);
-        autoCompleteTextViewCountry.setOnFocusChangeListener(this);
         autoCompleteTextViewCountry.setAdapter(adapterAllCountries);
-
-
-        chosenCountry = autoCompleteTextViewCountry.getText().toString();
-        Log.i("MyLog", chosenCountry);
-        ArrayList<String> neededCities = dataBaseDestinationHelper.getNeededCities(chosenCountry);
-        ArrayAdapter<String> adapterNeededCities = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, neededCities);
+        autoCompleteTextViewCountry.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                autoCompleteTextViewCity.getText().clear();
+                chosenCountry = autoCompleteTextViewCountry.getText().toString();
+                ArrayList<String> neededCities = dataBaseDestinationHelper.getNeededCities(chosenCountry);
+                ArrayAdapter<String> adapterNeededCities = new ArrayAdapter<String>(CreateNewTripActivity.this, android.R.layout.simple_dropdown_item_1line, neededCities);
+                autoCompleteTextViewCity.setAdapter(adapterNeededCities);
+            }
+        });
+        autoCompleteTextViewCountry.setOnFocusChangeListener(this);
         autoCompleteTextViewCity.setOnFocusChangeListener(this);
-        autoCompleteTextViewCity.setAdapter(adapterNeededCities);
-
 
         final RadioRealButton btnBus = (RadioRealButton) findViewById(R.id.transport_bus);
         final RadioRealButton btnCar = (RadioRealButton) findViewById(R.id.transport_car);
@@ -90,12 +92,9 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         });
 
         //обработка кнопки "Создать поездку"
-        createTrip.setOnClickListener(new View.OnClickListener()
-
-        {
+        createTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
 
@@ -200,13 +199,14 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
                 if (hasFocus) {
                     if (autoCompleteTextViewCountry.length() > 0) {
                         autoCompleteTextViewCountry.getText().clear();
+                        autoCompleteTextViewCity.getText().clear();
                     }
                 }
                 break;
             case R.id.city:
                 if (hasFocus) {
-                    if (autoCompleteTextViewCity.length() > 0) {
-                        autoCompleteTextViewCity.getText().clear();
+                    if (autoCompleteTextViewCountry.length() == 0) {
+                        autoCompleteTextViewCity.setError(getResources().getString(R.string.error_city));
                     }
                 }
                 break;
@@ -242,4 +242,6 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         super.onDestroy();
         dataBaseDestinationHelper.close();
     }
+
+
 }
