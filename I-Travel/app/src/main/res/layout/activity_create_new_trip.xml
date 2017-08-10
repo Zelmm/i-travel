@@ -123,11 +123,6 @@
                     android:paddingTop="8dp"
                     android:text="@string/txt_type" />
 
-                <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:background="@color/colorTextLight" />-->
-
 
                 <co.ceryle.radiorealbutton.RadioRealButtonGroup
                     android:id="@+id/type_group"
@@ -148,19 +143,6 @@
                     app:rrbg_selectorSize="4dp">
 
                     <co.ceryle.radiorealbutton.RadioRealButton
-                        android:id="@+id/type_business"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:rrb_drawableHeight="36dp"
-                        app:rrb_drawablePadding="8dp"
-                        app:rrb_drawableTintTo="@color/colorAccentFab"
-                        app:rrb_drawableWidth="36dp"
-                        app:rrb_ripple="true"
-                        app:rrb_rippleColor="@color/colorBackground"
-                        app:rrb_text="@string/txt_type_business"
-                        app:rrb_textColor="@color/colorTextDark" />
-
-                    <co.ceryle.radiorealbutton.RadioRealButton
                         android:id="@+id/type_vacation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -172,6 +154,19 @@
                         app:rrb_ripple="true"
                         app:rrb_rippleColor="@color/colorBackground"
                         app:rrb_text="@string/txt_type_vacation"
+                        app:rrb_textColor="@color/colorTextDark" />
+
+                    <co.ceryle.radiorealbutton.RadioRealButton
+                        android:id="@+id/type_business"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:rrb_drawableHeight="36dp"
+                        app:rrb_drawablePadding="8dp"
+                        app:rrb_drawableTintTo="@color/colorAccentFab"
+                        app:rrb_drawableWidth="36dp"
+                        app:rrb_ripple="true"
+                        app:rrb_rippleColor="@color/colorBackground"
+                        app:rrb_text="@string/txt_type_business"
                         app:rrb_textColor="@color/colorTextDark" />
                 </co.ceryle.radiorealbutton.RadioRealButtonGroup>
 

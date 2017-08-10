@@ -40,4 +40,12 @@
     <string name="title_activity_person_edit">Участник</string>
     <string name="txt_btn_person_edit_ok">Готово</string>
     <string name="error_city">Сначала надо выбрать страну</string>
+    <string name="txt_sex_woman">женский</string>
+    <string name="txt_sex_man">мужской</string>
+    <string name="txt_sex">Пол</string>
+    <string name="txt_age">Возраст</string>
+    <string name="txt_name">Имя</string>
+    <string name="title_ava_dialog">Выбор аватара</string>
+    <string name="btn_ava_dialog_ok">Ок</string>
+    <string name="btn_ava_dialog_no">Отмена</string>
 </resources>

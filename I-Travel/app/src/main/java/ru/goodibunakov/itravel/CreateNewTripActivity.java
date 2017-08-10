@@ -242,6 +242,4 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         super.onDestroy();
         dataBaseDestinationHelper.close();
     }
-
-
 }
