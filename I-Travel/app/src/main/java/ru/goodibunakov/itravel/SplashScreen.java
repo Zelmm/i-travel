@@ -1,14 +1,11 @@
 package ru.goodibunakov.itravel;
 
 import android.content.Intent;
-import android.database.SQLException;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.viksaa.sssplash.lib.activity.AwesomeSplash;
 import com.viksaa.sssplash.lib.cnst.Flags;
 import com.viksaa.sssplash.lib.model.ConfigSplash;
-
-import java.io.IOException;
 
 /**
  * Created by GooDi on 20.06.2017.

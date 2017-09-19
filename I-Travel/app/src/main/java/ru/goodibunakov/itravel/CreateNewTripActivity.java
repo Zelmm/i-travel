@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
@@ -39,11 +46,20 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
     AutoCompleteTextView autoCompleteTextViewCountry;
     AutoCompleteTextView autoCompleteTextViewCity;
     String chosenCountry;
+    List<HashMap<String, String>> persons;
+    RecyclerView personList;
+    static final String NAME = null, AGE = null, SEX = null, AVA = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_trip);
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        persons = new ArrayList<>();
+        personList = (RecyclerView) findViewById(R.id.person_list);
+        personList.setLayoutManager(new LinearLayoutManager(CreateNewTripActivity.this, LinearLayoutManager.HORIZONTAL, false));
+
 
         numberButton = (ElegantNumberButton) findViewById(R.id.elegant_number_button);
         Button createTrip = (Button) findViewById(R.id.btn_create_trip);
@@ -95,6 +111,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         createTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO: создание поездки
             }
         });
 
@@ -107,13 +124,6 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
                 if (oldValue < newValue) {
                     Intent newPerson = new Intent(CreateNewTripActivity.this, PersonEditActivity.class);
                     startActivityForResult(newPerson, 0);
-//                    View imageView = new ImageView(CreateNewTripActivity.this);
-//                    View.setImageResource(R.drawable.i_travel_logo_bird);
-//                    ViewGroup.LayoutParams imageViewLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//                    imageViewLayoutParams.height = 300;
-//                    imageViewLayoutParams.width = 300;
-//                    imageView.setLayoutParams(imageViewLayoutParams);
-                    //flowLayout.addView(imageView);
                 } else {
                     //Удаляем
                     ad = new AlertDialog.Builder(CreateNewTripActivity.this);
@@ -229,17 +239,39 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
                                 Toast.makeText(CreateNewTripActivity.this, getResources().getString(R.string.warning_enter_date_from), Toast.LENGTH_SHORT).show();
                             } else chooseDate.show();
                             break;
-
                     }
                 }
                 break;
         }
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dataBaseDestinationHelper.close();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        String name = data.getStringExtra("name");
+        String age = data.getStringExtra("age");
+        String sex = data.getStringExtra("sex");
+        String ava = data.getStringExtra("ava");
+//        HashMap<String, String> person = new HashMap<>();
+//        person.put(NAME, name);
+//        person.put(AGE, age);
+//        person.put(SEX, sex);
+//        person.put(AVA, ava);
+//        persons.add(person);
+
+        //personList.setAdapter(new PersonsListAdapter(persons));
+
+        Log.e("Круть", persons.size() + " name " + name + "   age " + age + "   sex = " + sex + "  ava = " + ava + "   " + getResources().getIdentifier("avatars_02", "drawable", "ru.goodibunakov.itravel"));
+
+        // У меня есть id ресурса-строка из файла R. например: 21346466556. Это mp3 файл в папке raw. Как мне его преобразовать в File?
+        // mContext.getResources().getResourceEntryName(Integer.parseInt("ResourceId")));
     }
 }

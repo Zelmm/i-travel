@@ -67,17 +67,6 @@ public class DataBaseDestinationHelper extends SQLiteOpenHelper {
 
         File dbFile = context.getDatabasePath(DB_NAME);
         return dbFile.exists();
-
-//        try{
-//            String myPath = DB_PATH + DB_NAME;
-//            checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-//        }catch(SQLiteException e){
-//            //база еще не существует
-//        }
-//        if(checkDB != null){
-//            checkDB.close();
-//        }
-//        return checkDB != null ? true : false;
     }
 
     /**
@@ -139,18 +128,15 @@ public class DataBaseDestinationHelper extends SQLiteOpenHelper {
     // вы можете возвращать курсоры через "return destinationDatabase.query(....)", это облегчит их использование
     // в создании адаптеров для ваших view
 
-//    public Cursor query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy) {
-//        return destinationDatabase.query("destination", null, null, null, null, null, null);
-//    }
 
-    public ArrayList<String> getAllCountries(){
+    public ArrayList<String> getAllCountries() {
         ArrayList<String> allCountries = new ArrayList<>();
 
         String countries = "SELECT DISTINCT country FROM destination";
         Cursor cursorCountry = getReadableDatabase().rawQuery(countries, null);
 
         cursorCountry.moveToFirst();
-        while (!cursorCountry.isAfterLast()){
+        while (!cursorCountry.isAfterLast()) {
             allCountries.add(cursorCountry.getString(cursorCountry.getColumnIndex("country")));
             cursorCountry.moveToNext();
         }
@@ -158,14 +144,14 @@ public class DataBaseDestinationHelper extends SQLiteOpenHelper {
         return allCountries;
     }
 
-    public ArrayList<String> getNeededCities(String selectedCountry){
+    public ArrayList<String> getNeededCities(String selectedCountry) {
         ArrayList<String> neededCities = new ArrayList<>();
 
         String cities = "SELECT city FROM destination WHERE country IN (\"" + selectedCountry + "\")";
         Cursor cursorCity = getReadableDatabase().rawQuery(cities, null);
 
         cursorCity.moveToFirst();
-        while (!cursorCity.isAfterLast()){
+        while (!cursorCity.isAfterLast()) {
             neededCities.add(cursorCity.getString(cursorCity.getColumnIndex("city")));
             cursorCity.moveToNext();
         }

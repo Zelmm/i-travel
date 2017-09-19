@@ -333,22 +333,17 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:textSize="@dimen/text_body" />
 
-                    <HorizontalScrollView
-                        android:id="@+id/horizontal_scroll_view"
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/person_list"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:scrollbars="horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/elegant_number_button">
+                        app:layout_constraintTop_toBottomOf="@+id/elegant_number_button" />
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/person_list"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:scrollbars="horizontal" />
-
-                    </HorizontalScrollView>
 
                 </android.support.constraint.ConstraintLayout>
             </LinearLayout>

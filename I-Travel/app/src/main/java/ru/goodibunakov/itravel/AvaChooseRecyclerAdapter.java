@@ -1,5 +1,6 @@
 package ru.goodibunakov.itravel;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,13 +11,11 @@ import android.widget.ImageView;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by GooDi on 10.08.2017.
- */
-
 public class AvaChooseRecyclerAdapter extends RecyclerView.Adapter<AvaChooseRecyclerAdapter.AvaViewHolder> {
 
     private static final String TAG = "AvaChooseAdapter";
+    Context context;
+    private AvaChooseRecyclerAdapter.AvaViewHolder.MyClickListener myClickListener;
 
     List<Integer> resourceIds = Arrays.asList(
             R.drawable.avatars_01, R.drawable.avatars_02, R.drawable.avatars_03,
@@ -42,60 +41,53 @@ public class AvaChooseRecyclerAdapter extends RecyclerView.Adapter<AvaChooseRecy
             R.drawable.avatars_61, R.drawable.avatars_62, R.drawable.avatars_63,
             R.drawable.avatars_64, R.drawable.avatars_65, R.drawable.avatars_66);
 
+    public AvaChooseRecyclerAdapter(Context context, AvaChooseRecyclerAdapter.AvaViewHolder.MyClickListener m) {
+        this.context = context;
+        myClickListener = m;
+    }
 
-    public static class AvaViewHolder extends RecyclerView.ViewHolder {
+    public static class AvaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        protected MyClickListener myClickListener;
+        protected ImageView iv;
 
-        public ImageView iv;
-
-        public AvaViewHolder(View itemView) {
+        public AvaViewHolder(View itemView, MyClickListener myClickListener) {
             super(itemView);
-            iv = (ImageView) itemView.findViewById(R.id.ava_item_recycler_imageview);
+            this.myClickListener = myClickListener;
+            iv = (ImageView) itemView.findViewById(R.id.ava_item_imageview);
+            iv.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (myClickListener != null) myClickListener.onAvaClickListener(getLayoutPosition());
+        }
+
+        public interface MyClickListener {
+            void onAvaClickListener(int position);
         }
     }
 
+    @Override
+    public long getItemId(int position) {
+        return resourceIds.get(position);
+    }
 
     @Override
-    public AvaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AvaChooseRecyclerAdapter.AvaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.ava_item, parent, false);
-        v.setPadding(4, 4, 4, 4);
-        return new AvaViewHolder(v);
+        v.setPadding(14, 14, 14, 14);
+        return new AvaViewHolder(v, myClickListener);
     }
 
     @Override
     public void onBindViewHolder(AvaViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder position: " + position + " | holder obj:" + holder.toString());
         holder.iv.setImageResource(resourceIds.get(position));
-        holder.iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
-//        Picasso.with(holder.iv.getContext())
-//                .load(resourceIds.get(position))
-//                .fit()
-//                .centerInside()
-//                .into(holder.iv);
+        Log.d(TAG, "onBindViewHolder position: " + position + " | " + holder.toString());
     }
 
     @Override
     public int getItemCount() {
         return resourceIds.size();
     }
-
-//    public static class ClickableViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-//        OnClickListener onClickListener;
-//
-//
-//        public ClickableViewHolder(View itemView, OnClickListener onClickListener) {
-//            super(itemView);
-//            this.onClickListener = onClickListener;
-//            itemView.setOnClickListener(this);
-//            //itemView.setOnLongClickListener(this);
-//        }
-//
-//        @Override
-//        public void onClick(View view) {
-//            onClickListener.onClick(view, getPosition());
-//        }
-//
-//        public interface OnClickListener {
-//            void onClick(View view, int position);
-//        }
-//    }
 }

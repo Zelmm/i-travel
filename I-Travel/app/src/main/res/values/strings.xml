@@ -48,4 +48,6 @@
     <string name="title_ava_dialog">Выбор аватара</string>
     <string name="btn_ava_dialog_ok">Ок</string>
     <string name="btn_ava_dialog_no">Отмена</string>
+    <string name="enter_name">Введите имя участника</string>
+    <string name="enter_age">Введите возраст участника</string>
 </resources>
