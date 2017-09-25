@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -24,6 +23,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,21 +59,21 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         setContentView(R.layout.activity_create_new_trip);
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         persons = new ArrayList<>();
+
         personList = (RecyclerView) findViewById(R.id.person_list);
         personList.setLayoutManager(new LinearLayoutManager(CreateNewTripActivity.this, LinearLayoutManager.HORIZONTAL, false));
 
-
         numberButton = (ElegantNumberButton) findViewById(R.id.elegant_number_button);
         Button createTrip = (Button) findViewById(R.id.btn_create_trip);
-        createTrip.setClickable(false);
+
         autoCompleteTextViewCountry = (AutoCompleteTextView) findViewById(R.id.country);
         autoCompleteTextViewCity = (AutoCompleteTextView) findViewById(R.id.city);
         dateFrom = (EditText) findViewById(R.id.date_from);
         dateFrom.setOnFocusChangeListener(this);
         dateTo = (EditText) findViewById(R.id.date_to);
         dateTo.setOnFocusChangeListener(this);
-
 
         dataBaseDestinationHelper = new DataBaseDestinationHelper(this);
         ArrayList<String> allCountries = dataBaseDestinationHelper.getAllCountries();
@@ -259,16 +262,33 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         String name = data.getStringExtra("name");
         String age = data.getStringExtra("age");
         String sex = data.getStringExtra("sex");
-        String ava = data.getStringExtra("ava");
-//        HashMap<String, String> person = new HashMap<>();
-//        person.put(NAME, name);
-//        person.put(AGE, age);
-//        person.put(SEX, sex);
-//        person.put(AVA, ava);
-//        persons.add(person);
+        int ava = data.getIntExtra("ava", 0);
 
-        //personList.setAdapter(new PersonsListAdapter(persons));
 
+
+        String personsString = "{\"peoples\":[{\"name\":\"" + name + "\",\"age\":\"" + age + "\",\"sex\":\"" + sex + "\",\"ava\":" + ava + "}]}";
+        try {
+            JSONObject object = new JSONObject(personsString);
+            JSONArray array = object.getJSONArray("peoples");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject json_data = array.getJSONObject(i);
+                HashMap<String, String> person = new HashMap<>();
+                Log.e("json_data", json_data.toString());
+                person.put("name", json_data.getString("name"));
+                person.put("age", json_data.getString("age"));
+                person.put("sex", json_data.getString("sex"));
+                person.put("ava", json_data.getString("ava"));
+                persons.add(person);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        PersonsListAdapter personsListAdapter = new PersonsListAdapter(persons);
+        personsListAdapter.notifyDataSetChanged();
+        personList.setAdapter(personsListAdapter);
+
+        Log.e("personsString", personsString);
+        Log.e("persons", persons.toString());
         Log.e("Круть", persons.size() + " name " + name + "   age " + age + "   sex = " + sex + "  ava = " + ava + "   " + getResources().getIdentifier("avatars_02", "drawable", "ru.goodibunakov.itravel"));
 
         // У меня есть id ресурса-строка из файла R. например: 21346466556. Это mp3 файл в папке raw. Как мне его преобразовать в File?

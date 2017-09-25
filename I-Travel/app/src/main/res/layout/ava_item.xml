@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ava_item"
     android:layout_width="match_parent"
@@ -18,9 +18,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        app:srcCompat="@drawable/avatars_yes"
-        android:visibility="invisible"/>
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:visibility="invisible"
+        app:layout_constraintRight_toRightOf="@+id/ava_item_imageview"
+        app:layout_constraintTop_toTopOf="@+id/ava_item_imageview"
+        app:srcCompat="@drawable/avatars_yes" />
 
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>
 
 
