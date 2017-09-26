@@ -1,6 +1,8 @@
 package ru.goodibunakov.itravel;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //очищение SharedPreferences в момент создания новой поездки
+                getSharedPreferences("preferencePersons", Context.MODE_PRIVATE).edit().clear().apply();
                 Intent intent = new Intent(MainActivity.this, CreateNewTripActivity.class);
                 startActivity(intent);
             }

@@ -1,5 +1,6 @@
 package ru.goodibunakov.itravel;
 
+import android.app.Application;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ public class PersonsListAdapter extends RecyclerView.Adapter<PersonsListAdapter.
         this.persons = persons;
     }
 
-    public static class PersonsViewHolder extends RecyclerView.ViewHolder {
+    public static class PersonsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         protected ImageView ava;
         protected TextView name;
@@ -29,6 +31,11 @@ public class PersonsListAdapter extends RecyclerView.Adapter<PersonsListAdapter.
             super(itemView);
             ava = (ImageView) itemView.findViewById(R.id.personlist_ava);
             name = (TextView) itemView.findViewById(R.id.personlist_name);
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 

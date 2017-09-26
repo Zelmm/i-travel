@@ -8,7 +8,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -17,13 +16,12 @@
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".CreateNewTripActivity"
             android:label="@string/create_new_trip_label"
@@ -38,7 +36,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ru.goodibunakov.itravel.CreateNewTripActivity" />
         </activity>
-        <service android:name=".MyDestinationService"/>
+        <activity
+            android:name=".TravelActivity"
+            android:label="@string/title_activity_travel"
+            android:parentActivityName=".CreateNewTripActivity"
+            android:theme="@style/AppThemeTabs">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ru.goodibunakov.itravel.CreateNewTripActivity" />
+        </activity>
+
+        <service android:name=".MyDestinationService" />
     </application>
 
 </manifest>

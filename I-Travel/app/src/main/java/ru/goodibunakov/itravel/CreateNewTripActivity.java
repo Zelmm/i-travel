@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -51,21 +52,31 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
     String chosenCountry;
     List<HashMap<String, String>> persons;
     RecyclerView personList;
-    static final String NAME = null, AGE = null, SEX = null, AVA = null;
+    SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_trip);
 
+        //поддержка векторной графики
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
+        //создание хранилища для горизонтального списка персон
+        sharedPreferences = getSharedPreferences("preferencePersons", Context.MODE_PRIVATE);
+
+        //лист для горизонтального списка персон
         persons = new ArrayList<>();
 
+        //горизонтальный список персон
         personList = (RecyclerView) findViewById(R.id.person_list);
         personList.setLayoutManager(new LinearLayoutManager(CreateNewTripActivity.this, LinearLayoutManager.HORIZONTAL, false));
 
+        //кнопка добавления участника
         numberButton = (ElegantNumberButton) findViewById(R.id.elegant_number_button);
+
+        //кнопка "Создать поездку"
         Button createTrip = (Button) findViewById(R.id.btn_create_trip);
 
         autoCompleteTextViewCountry = (AutoCompleteTextView) findViewById(R.id.country);
@@ -101,9 +112,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         RadioRealButtonGroup group = (RadioRealButtonGroup) findViewById(R.id.transport_group);
 
         // onClickButton listener detects any click performed on buttons by touch
-        group.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener()
-
-        {
+        group.setOnClickedButtonListener(new RadioRealButtonGroup.OnClickedButtonListener() {
             @Override
             public void onClickedButton(RadioRealButton button, int position) {
                 Toast.makeText(CreateNewTripActivity.this, "Clicked! Position: " + (position + 1), Toast.LENGTH_SHORT).show();
@@ -114,16 +123,15 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         createTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: создание поездки
+                Intent intent = new Intent(CreateNewTripActivity.this, TravelActivity.class);
+                startActivity(intent);
             }
         });
 
-        numberButton.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener()
-
-        {
+        numberButton.setOnValueChangeListener(new ElegantNumberButton.OnValueChangeListener() {
             @Override
             public void onValueChange(ElegantNumberButton view, int oldValue, int newValue) {
-                // Добавляем новый ImageView
+                // Добавляем нового участника
                 if (oldValue < newValue) {
                     Intent newPerson = new Intent(CreateNewTripActivity.this, PersonEditActivity.class);
                     startActivityForResult(newPerson, 0);
@@ -256,17 +264,87 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        String personsString = "";
+
         if (data == null) {
             return;
         }
+
+        //получаем данные участника из интента (из активити создания участника)
         String name = data.getStringExtra("name");
         String age = data.getStringExtra("age");
         String sex = data.getStringExtra("sex");
         int ava = data.getIntExtra("ava", 0);
 
+        //очищаем SharedPreferences перед внесением второго и более участника
+        //проверка, были ли уже сохранены участники
+        Boolean isFirstPerson = sharedPreferences.contains("isFirstPerson");
+
+        if (!isFirstPerson) {
+            Log.e("asasas", "isFirstPerson отсутствует");
+            getSharedPreferences("preferencePersons", 0).edit().clear().apply();
+            personsString = "{\"peoples\":[{\"name\":\"" + name + "\",\"age\":\"" + age + "\",\"sex\":\"" + sex + "\",\"ava\":" + ava + "}]}";
+            //сохраняем участника в SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("personsStringShared", personsString);
+            editor.putBoolean("isFirstPerson", true);
+            editor.commit();
+
+            parseJSON(personsString);
+        } else {
+            Log.e("asasas", "isFirstPerson существует");
+            String personsStringForAddingPerson = sharedPreferences.getString("personsStringShared", "null");
+            addToJSON(personsStringForAddingPerson, name, age, sex, ava);
+        }
+
+        PersonsListAdapter personsListAdapter = new PersonsListAdapter(persons);
+        //personsListAdapter.notifyDataSetChanged();
+        personList.setAdapter(personsListAdapter);
+
+        Log.e("personsString", personsString);
+        Log.e("persons", persons.toString());
+        Log.e("Круть", persons.size() + " name " + name + "   age " + age + "   sex = " + sex + "  ava = " + ava + "   " + getResources().getIdentifier("avatars_02", "drawable", "ru.goodibunakov.itravel"));
+
+        // У меня есть id ресурса-строка из файла R. например: 21346466556. Это mp3 файл в папке raw. Как мне его преобразовать в File?
+        // mContext.getResources().getResourceEntryName(Integer.parseInt("ResourceId")));
+    }
 
 
-        String personsString = "{\"peoples\":[{\"name\":\"" + name + "\",\"age\":\"" + age + "\",\"sex\":\"" + sex + "\",\"ava\":" + ava + "}]}";
+    private List<HashMap<String, String>> addToJSON(String personsStringForAddingPerson, String name, String age, String sex, int ava) {
+        JSONArray array;
+
+        try {
+            JSONObject object = new JSONObject(personsStringForAddingPerson);
+            array = object.getJSONArray("peoples");
+            JSONObject onePeople = new JSONObject();
+            onePeople.put("name", name);
+            onePeople.put("age", age);
+            onePeople.put("sex", sex);
+            onePeople.put("ava", ava);
+            //добавил нового участника в json
+            array.put(onePeople);
+            persons.clear();
+
+            //парсим всех участников из json в List
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject json_data = array.getJSONObject(i);
+                HashMap<String, String> person = new HashMap<>();
+                Log.e("json_data", json_data.toString());
+                person.put("name", json_data.getString("name"));
+                person.put("age", json_data.getString("age"));
+                person.put("sex", json_data.getString("sex"));
+                person.put("ava", json_data.getString("ava"));
+                persons.add(person);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return persons;
+    }
+
+    //метод который из строки personsList возвращает List персон для адаптера горизонтального списка участников
+    private List<HashMap<String, String>> parseJSON(String personsString) {
         try {
             JSONObject object = new JSONObject(personsString);
             JSONArray array = object.getJSONArray("peoples");
@@ -283,15 +361,6 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        PersonsListAdapter personsListAdapter = new PersonsListAdapter(persons);
-        personsListAdapter.notifyDataSetChanged();
-        personList.setAdapter(personsListAdapter);
-
-        Log.e("personsString", personsString);
-        Log.e("persons", persons.toString());
-        Log.e("Круть", persons.size() + " name " + name + "   age " + age + "   sex = " + sex + "  ava = " + ava + "   " + getResources().getIdentifier("avatars_02", "drawable", "ru.goodibunakov.itravel"));
-
-        // У меня есть id ресурса-строка из файла R. например: 21346466556. Это mp3 файл в папке raw. Как мне его преобразовать в File?
-        // mContext.getResources().getResourceEntryName(Integer.parseInt("ResourceId")));
+        return persons;
     }
 }
