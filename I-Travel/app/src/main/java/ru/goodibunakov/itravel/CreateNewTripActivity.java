@@ -299,7 +299,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
         }
 
         PersonsListAdapter personsListAdapter = new PersonsListAdapter(persons);
-        //personsListAdapter.notifyDataSetChanged();
+        personsListAdapter.notifyDataSetChanged();
         personList.setAdapter(personsListAdapter);
 
         Log.e("personsString", personsString);
