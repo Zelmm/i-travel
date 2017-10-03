@@ -296,6 +296,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
             Log.e("asasas", "isFirstPerson существует");
             String personsStringForAddingPerson = sharedPreferences.getString("personsStringShared", "null");
             addToJSON(personsStringForAddingPerson, name, age, sex, ava);
+
         }
 
         PersonsListAdapter personsListAdapter = new PersonsListAdapter(persons);
@@ -326,11 +327,16 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
             array.put(onePeople);
             persons.clear();
 
+            //добавляем полный список участников с добавленным участником в SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("personsStringShared", object.toString());
+            editor.commit();
+
             //парсим всех участников из json в List
             for (int i = 0; i < array.length(); i++) {
                 JSONObject json_data = array.getJSONObject(i);
                 HashMap<String, String> person = new HashMap<>();
-                Log.e("json_data", json_data.toString());
+                Log.e("json_data addToJSON", json_data.toString());
                 person.put("name", json_data.getString("name"));
                 person.put("age", json_data.getString("age"));
                 person.put("sex", json_data.getString("sex"));
@@ -351,7 +357,7 @@ public class CreateNewTripActivity extends AppCompatActivity implements View.OnF
             for (int i = 0; i < array.length(); i++) {
                 JSONObject json_data = array.getJSONObject(i);
                 HashMap<String, String> person = new HashMap<>();
-                Log.e("json_data", json_data.toString());
+                Log.e("json_data parseJSON", json_data.toString());
                 person.put("name", json_data.getString("name"));
                 person.put("age", json_data.getString("age"));
                 person.put("sex", json_data.getString("sex"));
