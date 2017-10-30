@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -78,7 +79,6 @@ public class PersonEditActivity extends AppCompatActivity implements View.OnClic
                             break;
                     }
                 }
-
             }
         });
     }
@@ -135,6 +135,9 @@ public class PersonEditActivity extends AppCompatActivity implements View.OnClic
             case (R.id.btn_ok_person):
                 editTextName = (EditText) findViewById(R.id.edittext_name);
                 editTextAge = (EditText) findViewById(R.id.edittext_age);
+                //ограничение ввода возраста - от 0 до 90
+                editTextAge.setFilters(new InputFilter[]{new InputFilterMinMax(0, 90)});
+
                 String name = editTextName.getText().toString();
                 String age = editTextAge.getText().toString();
                 //определяем пол участника: мужской пол = 0, женский пол = 1
